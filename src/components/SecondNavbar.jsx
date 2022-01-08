@@ -15,7 +15,7 @@ function SecondNavbar() {
     return (
         <>
         <Container>
-            <ShopDropdown onClick={showDropdownHandler}>
+            <ShopDropdown onClick={showDropdownHandler}> 
                 <Menu style={{ cursor: 'pointer' }} />
                 <p>Shop By Category</p>
             </ShopDropdown>

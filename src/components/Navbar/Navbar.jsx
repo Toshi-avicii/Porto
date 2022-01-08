@@ -8,16 +8,20 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { useSelector } from 'react-redux';
 import SecondNavbar from '../SecondNavbar';
 import SearchBar from './SearchBar';
+import PreviewCartModal from '../PreviewCartModal';
 
 function Navbar() {
     
     const userName = useSelector(state => state.auth.userName);
     const userEmail = useSelector(state => state.auth.userEmail);
     const userId = useSelector(state => state.auth.userId);
+    const productsInCart = useSelector(state => state.cart.totalItems);
+    const productsInWishlist = useSelector(state => state.cart.totalWishlistItems);
     
     const [wishlistHoverColor, setWishlistHoverColor] = useState(false);
     const [cartIconHoverColor, setCartIconHoverColor] = useState(false);
     const [docHeight, setDocHeight] = useState(0);
+    const [cartPreview, setCartPreview] = useState(false);
 
     useEffect(() => {
         const navbar = document.querySelector('.navbar');
@@ -39,6 +43,16 @@ function Navbar() {
         })
     }, [docHeight]);
 
+    const setPreview = () => {
+        setCartIconHoverColor(true);
+        setCartPreview(true);
+    }
+
+    const setPreviewCart = () => {
+        setCartIconHoverColor(false);
+        setCartPreview(false);
+    }
+
     return (
         <>
             <Container className="navbar">
@@ -51,15 +65,14 @@ function Navbar() {
                         style={{ color: wishlistHoverColor ? '#ff595e': 'white', fontSize: '2.1rem', cursor: 'pointer', transition: '0.3s', margin: '0 0.75rem' }} 
                         onMouseLeave={() => setWishlistHoverColor(false)}
                         />
-                        <div className="wish-counter">0</div>
+                        <div className="wish-counter">{productsInWishlist}</div>
                     </WishList>
-                    <CartIconBox>
+                    <CartIconBox onMouseEnter={setPreview} onMouseLeave={setPreviewCart}>
                         <ShoppingCartOutlinedIcon 
-                        onMouseEnter={() => setCartIconHoverColor(true)} 
                         style={{ color: cartIconHoverColor ? '#ff595e' : 'white', fontSize: '2.1rem', cursor: 'pointer', transition: '0.3s', margin: '0 0.75rem' }} 
-                        onMouseLeave={() => setCartIconHoverColor(false)}
                         />
-                        <div className="cart-counter">0</div>
+                        <div className="cart-counter">{productsInCart}</div>
+                        <PreviewCartModal modalState={cartPreview} />
                     </CartIconBox>
 
                     <AuthenticationBox>

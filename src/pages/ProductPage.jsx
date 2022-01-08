@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import useFetchData from '../hooks/useFetchData';
@@ -7,11 +8,19 @@ import ImageGallery from 'react-image-gallery';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import 'react-loading-skeleton/dist/skeleton.css';
-
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+import ProductSidebar from '../components/ProductSidebar';
+import ProductCarousel from '../components/ProductCarousel';
+import { cartActions } from '../store/cartSlice';
+ 
+toast.configure();
 function ProductPage() {
     const [quantity, setQuantity] = useState(1);
-    const productId = useParams().productId
+    const productId = useParams().productId;
     const { data, loading } = useFetchData();
+    const dispatch = useDispatch();
+    const cart = useSelector(state => state.cart.items);
 
     window.addEventListener('scroll', () => {
         const nav = document.querySelector('.back-btn-nav');
@@ -31,8 +40,51 @@ function ProductPage() {
     const decreaseQuantity = () => {
         setQuantity(prevState => prevState - 1);
     }
-       
 
+    const toastHandler = () => {
+        const product = data.find(item => {
+            return item.id === productId;
+        })
+
+        dispatch(cartActions.addToCart({
+            id: product.id,
+            name: product.title,
+            image: product.images[0],
+            description: product.description,
+            price: product.price,
+            quantity: Number(quantity)
+        }));
+
+        toast.success(`${quantity === 1 ? 'Item added to the cart' : `${quantity} Items added to the cart`}`, {
+            theme: 'dark',
+            toastId: 'add-to-cart'
+        });
+    }
+
+    const wishlistToastHandler = () => {
+        const product = data.filter(item => {
+            return item.id === productId;
+        }).map(product => {
+            return product;
+        });
+
+        const item = product[0];
+
+        dispatch(cartActions.addToWishlist({
+            id: item.id,
+            name: item.title,
+            image: item.images[0],
+            description: item.description,
+            price: item.price,
+            quantity: Number(quantity)
+        }));
+
+        toast.success('Item added to the Wishlist', {
+            theme: 'dark',
+            toastId: 'add-to-wishlist'
+        });
+    }
+        
     const product = data.filter(item => {
         return item.id === productId;
     }).map(product => {
@@ -79,15 +131,26 @@ function ProductPage() {
                         </div>
 
                         <div className="product-add-to-cart">
-                            <button className="atc">Add To Cart</button>
+                            <button className="atc" onClick={toastHandler} >Add To Cart</button>
                             <button className="bn">Buy Now</button>
 
-                            <button className="wishlist-btn">
+                            <button className="wishlist-btn" onClick={wishlistToastHandler}>
                                 <FavoriteBorderIcon style={{ fontSize: '40px' }} />
                             </button>
                         </div>
                     </div>
                     <hr />
+                </div>
+                <ProductSidebar />
+                <div className="product-description">
+                    <h2>Description</h2>
+                    <p>{product.description}</p>
+                    <div className="desc-img">
+                        <img src="/assets/description.jpg" alt="description" />
+                    </div>
+                </div>
+                <div className="product-subs">
+                    <ProductCarousel heading="Customers who bought this item also bought" />
                 </div>
             </div>
         )
@@ -332,7 +395,10 @@ const Container = styled.div`
     }
 
     .product-container {
-        display: flex;
+        display: grid;
+        grid-template-rows: auto;
+        grid-template-columns: 3fr 5fr 2fr;
+        grid-column-gap: 2rem;
         padding: 1.5rem 3rem;
 
         .product-img {
@@ -462,7 +528,7 @@ const Container = styled.div`
                     display: flex;
 
                     button {
-                        padding: 0.9rem 2rem;
+                        padding: 0.5rem 1.5rem;
                         border-radius: 4px;
                         background: black;
                         color: white; 
@@ -521,15 +587,64 @@ const Container = styled.div`
                 }
             }
 
-            @media(max-width: 992px) {
+            @media (max-width: 1400px) {
+                grid-column-start: 2;
+                grid-column-end: 4;
+            }
+
+            @media (max-width: 992px) {
                 margin-top: 2rem;
                 margin-left: 0;
                 padding: 0;
             }
         }
 
+        .product-description {
+            grid-column-start: 1;
+            grid-column-end: 3;
+            margin: 1rem 0;
+
+            h2 {
+                font-weight: 400;
+                margin-bottom: 1rem;
+                border-bottom: 2px solid grey;
+            }
+
+            p {
+                line-height: 25px;
+                text-align: justify;
+            }
+
+            .desc-img {
+                padding: 1.5rem 0;
+                
+                img {
+                    width: 100%;
+                }
+            }
+
+            @media (max-width: 1400px) {
+                grid-column-start: 1;
+                grid-column-end: 4;
+            }
+
+            @media (max-width: 768px) {
+                padding: 1rem;
+            }
+        }
+
+        .product-subs {
+            grid-column-start: 1;
+            grid-column-end: 4;
+            margin: 1rem 0;
+            padding: 0;
+        }
+
         @media(max-width: 992px) {
+            display: flex;
             flex-direction: column;
+            grid-template-columns: repeat(1fr);
+            grid-template-rows: repeat(3, 100%);
             padding: 0;
         }
     }

@@ -5,6 +5,10 @@
   font-family: 'Work Sans', sans-serif;
 } 
 
+:root {
+  --toastify-toast-background: #ff595e !important;
+}
+
 ul {
   list-style-type: disc;
 }
