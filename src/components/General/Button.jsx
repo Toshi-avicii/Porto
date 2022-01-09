@@ -14,6 +14,7 @@ function Button(props) {
             rounded={props.rounded}
             fontSize={props.fontSize}
             hoverBg={props.hoverBg}
+            margin={props.margin}
             >
                 <Link to={props.to}>{props.title}</Link>
             </Btn>
@@ -30,6 +31,7 @@ function Button(props) {
              fontSize={props.fontSize}
              hoverBg={props.hoverBg}
              onClick={props.onClick}
+             margin={props.margin}
             >
                 {props.title}
             </Btn>
@@ -47,6 +49,13 @@ const Btn = styled.button`
     cursor: pointer;
     transition: 0.5s;
     font-size: ${props => props.fontSize ? props.fontSize : "16px"};
+    margin: ${props => props.margin ? props.margin : "0px"};
+
+    a {
+        color: ${props => props.color ? props.color : "white"};
+        font-size: ${props => props.fontSize ? props.fontSize : "16px"};
+        text-decoration: none;
+    }
 
     &:hover {
         background: ${props => props.hoverBg ? props.hoverBg : '#000013'};

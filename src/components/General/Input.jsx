@@ -13,6 +13,7 @@ function Input(props) {
                  padding={props.padding}
                  border={props.border}
                  width={props.width}
+                 fontSize={props.fontSize}
                 ></Container>
             }
 
@@ -24,6 +25,7 @@ function Input(props) {
                 width={props.width}
                 id={props.id}
                 rows={props.rows}
+                fontSize={props.fontSize}
                />
             }
         </>
@@ -37,10 +39,11 @@ const Container = styled.input`
     width: ${props => props.width ? props.width : "50%"};
     padding: ${props => props.padding ? props.padding : "1"}rem;
     border: ${props => props.border ? props.border : "none"};
-    margin-left: ${props => props.marginLeft ? props.marginLeft : "0"}
-    margin-right: ${props => props.marginRight ? props.marginRight : "0"}
-    margin-top: ${props => props.marginTop ? props.marginLeft : "0"}
-    margin-bottom: ${props => props.marginBottom ? props.marginLeft : "0"}
+    margin-left: ${props => props.marginLeft ? props.marginLeft : "0"};
+    margin-right: ${props => props.marginRight ? props.marginRight : "0"};
+    margin-top: ${props => props.marginTop ? props.marginLeft : "0"};
+    margin-bottom: ${props => props.marginBottom ? props.marginLeft : "0"};
+    font-size: ${props => props.fontSize ? props.fontSize : "16"}px;
 
     &:focus {
         border: none;

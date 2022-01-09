@@ -66,16 +66,15 @@ const cartSlice = createSlice({
                 Math.round(state.wishlistPrice);
             } 
             if(existingProduct) {
-                state.wishlistItems.forEach(item => {
-                    item.orders = item.orders + Number(newItem.quantity);
-                    item.orderPrice = item.orderPrice + (Number(newItem.price) * Number(newItem.quantity));
-                })
+                existingProduct.orders = existingProduct.orders + Number(newItem.quantity);
+                existingProduct.orderPrice = existingProduct.orderPrice + (Number(newItem.price) * Number(newItem.quantity));
 
                 const newItemOrderPrice = newItem.price * newItem.quantity;
 
                 state.wishlistPrice += newItemOrderPrice;
 
-                Math.round(state.wishlistPrice);
+                Math.round(Number(state.wishlisttPrice));
+                Math.round(existingProduct.orderPrice);
             }
         },
 

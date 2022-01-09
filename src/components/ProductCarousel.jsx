@@ -61,6 +61,7 @@ function ProductCarousel(props) {
          id={item.id}
          rating={item.rating}
          categories={item.categories}
+         description={item.description}
         />
     });
 

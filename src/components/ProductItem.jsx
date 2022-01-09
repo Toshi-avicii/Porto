@@ -1,22 +1,62 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { cartActions } from '../store/cartSlice';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
+toast.configure();
 function ProductItem(props) {
-    const { title, img, discount, prevPrice, rating, price, id } = props;
+    const { title, img, discount, prevPrice, rating, price, id, description } = props;
+    const dispatch = useDispatch();
+
+    const addToCartHandler = () => {
+        dispatch(cartActions.addToCart({
+            id: id,
+            name: title,
+            image: img,
+            description: description,
+            price: price,
+            quantity: 1
+        }));
+
+        toast.success('Item added to cart', {
+            theme: 'dark',
+            toastId: 'add-to-cart'
+        });
+    }
+
+    const addToWishlistHandler = () => {
+        dispatch(cartActions.addToWishlist({
+            id: id,
+            name: title,
+            image: img,
+            description: description,
+            price: price,
+            quantity: 1
+        }));
+
+        toast.success('Item added to Wishlist', {
+            theme: 'dark',
+            toastId: 'add-to-wishlist'
+        });
+    }
 
     return (
         <Container>
             <div className="product-img">
-                <img src={img} width="200" height="200" alt={title} />
+                <Link to={`/shop/${id}`}>
+                    <img src={img} width="200" height="200" alt={title} />
+                </Link>
                 <div className="view-product">
-                    <button className="cart-btn">
+                    <button className="cart-btn" title="Add to cart" onClick={addToCartHandler}>
                         <i className="fa fa-shopping-bag"></i>
                     </button>
-                    <button className="quick-view-btn">
+                    <button className="quick-view-btn" title="quick view">
                         <i className="far fa-eye"></i>
                     </button>
-                    <button className="wishlist-btn">
+                    <button className="wishlist-btn" title="Add to wishlist" onClick={addToWishlistHandler}>
                         <i className="far fa-heart"></i>
                     </button>
                 </div>

@@ -15,7 +15,7 @@ function PreviewCartModal(props) {
     const defaultStyles = {
         transition: `all ${duration}ms ease-in-out`,
         opacity: 0,
-        transform: 'translateY(150px)'
+        transform: 'translateY(150px)',
     }
 
     const transitionStyles = {
@@ -54,34 +54,34 @@ function PreviewCartModal(props) {
             mountOnEnter unmountOnExit
         >
             {state => (
-                <Container style={{ ...defaultStyles, ...transitionStyles[state] }}>
+                <Container style={{ ...defaultStyles, ...transitionStyles[state], overflowY: 'scroll' }}>
                     { modalContent }
                     <CartAmount>
-                    <h4>Sub Total: </h4>
-                    <h4 className="cart-amount">${cartAmount.toFixed(2)}</h4>
-                </CartAmount>
-                <ModalButtons>
-                    <Button 
-                        to="/cart"
-                        color="white"
-                        bg="#010101"
-                        padding="0.85rem 3rem"
-                        rounded="4px"
-                        title="View Cart"
-                        fontSize="18px"
-                        hoverBg="#ff595e"
-                    />
-                    <Button 
-                        to="/cart"
-                        color="white"
-                        bg="#010101"
-                        padding="0.85rem 3rem"
-                        rounded="4px"
-                        title="Checkout"
-                        fontSize="18px"
-                        hoverBg="#ff595e"
-                    />
-                </ModalButtons>
+                        <h4>Sub Total: </h4>
+                        <h4 className="cart-amount">${cartAmount.toFixed(2)}</h4>
+                    </CartAmount>
+                    <ModalButtons>
+                        <Button 
+                            to="/cart"
+                            color="white"
+                            bg="#010101"
+                            padding="0.85rem 3rem"
+                            rounded="4px"
+                            title="View Cart"
+                            fontSize="18px"
+                            hoverBg="#ff595e"
+                        />
+                        <Button 
+                            to="/cart"
+                            color="white"
+                            bg="#010101"
+                            padding="0.85rem 3rem"
+                            rounded="4px"
+                            title="Checkout"
+                            fontSize="18px"
+                            hoverBg="#ff595e"
+                        />
+                    </ModalButtons>
                 </Container>
             )}
         </Transition>
@@ -91,6 +91,7 @@ function PreviewCartModal(props) {
 export default PreviewCartModal;
 
 const Container = styled.div`
+    overflow-y: scroll;
     padding: 1.5rem;
     width: 500px;
     background: white;
@@ -99,6 +100,7 @@ const Container = styled.div`
     right: 50px;
     z-index: 15;
     border-radius: 2px;
+    height: 500px;
     
     p {
         font-size: 19px;
