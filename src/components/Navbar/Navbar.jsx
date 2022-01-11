@@ -60,12 +60,14 @@ function Navbar() {
                 <SearchBar />
                 <IconBox>
                     <WishList>
-                        <FavoriteBorderIcon 
-                        onMouseEnter={() => setWishlistHoverColor(true)} 
-                        style={{ color: wishlistHoverColor ? '#ff595e': 'white', fontSize: '2.1rem', cursor: 'pointer', transition: '0.3s', margin: '0 0.75rem' }} 
-                        onMouseLeave={() => setWishlistHoverColor(false)}
-                        />
-                        <div className="wish-counter">{productsInWishlist}</div>
+                        <Link to="/wishlist">
+                            <FavoriteBorderIcon 
+                            onMouseEnter={() => setWishlistHoverColor(true)} 
+                            style={{ color: wishlistHoverColor ? '#ff595e': 'white', fontSize: '2.1rem', cursor: 'pointer', transition: '0.3s', margin: '0 0.75rem' }} 
+                            onMouseLeave={() => setWishlistHoverColor(false)}
+                            />
+                            <div className="wish-counter">{productsInWishlist}</div>
+                        </Link>
                     </WishList>
                     <CartIconBox onMouseEnter={setPreview} onMouseLeave={setPreviewCart}>
                         <ShoppingCartOutlinedIcon 

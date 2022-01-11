@@ -16,7 +16,7 @@ function CartPage() {
 
     if(cartItems.length === 0) {
         cartPageContent = <Container>
-            <p>No items in the cart.</p>
+            <p className="empty-list">No items in the cart.</p>
         </Container>
     }
 
@@ -147,6 +147,14 @@ export default CartPage;
 
 const Container = styled.div`
     padding: 1.5rem 3.5rem;
+
+    p.empty-list {
+        padding: 1rem;
+        background: rgba(30, 144, 255, 0.5);
+        color: white;
+        border-radius: 4px;
+        border: 2px solid rgb(30, 144, 255); 
+    }
 
     .cart-title {
         margin: 2rem 0;

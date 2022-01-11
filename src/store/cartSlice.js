@@ -90,6 +90,18 @@ const cartSlice = createSlice({
             state.items = restProducts;
         },
 
+        removeFromWishlist(state, action) {
+            const newItem = action.payload;
+            const restProducts = state.wishlistItems.filter(item => {
+                return item.id !== newItem.id
+            })
+            state.wishlistPrice = state.wishlistPrice - (newItem.orders * newItem.price);
+            state.totalWishlistItems = state.totalWishlistItems - 1;
+            Math.round(state.wishlistPrice);
+            Math.round(state.totalWishlistItems);
+            state.wishlistItems = restProducts;
+        },
+
         removeOneFromCart(state, action) {
             const newItem = action.payload;
             const existingProduct = state.items.find(item => item.id === newItem.id);
@@ -104,7 +116,23 @@ const cartSlice = createSlice({
             Math.round(Number(state.cartPrice));
             Math.round(existingProduct.orderPrice);
         
-        }
+        },
+
+        removeOneFromWishlist(state, action) {
+            const newItem = action.payload;
+            const existingProduct = state.wishlistItems.find(item => item.id === newItem.id);
+
+            existingProduct.orders = existingProduct.orders - 1;
+            existingProduct.orderPrice = existingProduct.orderPrice - (Number(newItem.price) * 1);
+
+            const newItemOrderPrice = newItem.price * 1;
+
+            state.wishlistPrice -= newItemOrderPrice;
+
+            Math.round(Number(state.wishlistPrice));
+            Math.round(existingProduct.orderPrice);
+        
+        },
     }
 });
 
