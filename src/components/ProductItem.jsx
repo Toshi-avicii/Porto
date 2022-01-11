@@ -1,21 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { cartActions } from '../store/cartSlice';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
+import QuickViewModal from './QuickViewModal';
 
 toast.configure();
 function ProductItem(props) {
-    const { title, img, discount, prevPrice, rating, price, id, description } = props;
+    const { title, img, discount, prevPrice, rating, price, id, description, categories, points } = props;
     const dispatch = useDispatch();
+    const [showModal, setShowModal] = useState(false);
 
     const addToCartHandler = () => {
         dispatch(cartActions.addToCart({
             id: id,
             name: title,
-            image: img,
+            image: img[0],
             description: description,
             price: price,
             quantity: 1
@@ -31,7 +33,7 @@ function ProductItem(props) {
         dispatch(cartActions.addToWishlist({
             id: id,
             name: title,
-            image: img,
+            image: img[0],
             description: description,
             price: price,
             quantity: 1
@@ -43,44 +45,69 @@ function ProductItem(props) {
         });
     }
 
+    const showModalHandler = () => {
+        setShowModal(true);
+    }
+
     return (
+        <Box>
         <Container>
-            <div className="product-img">
-                <Link to={`/shop/${id}`}>
-                    <img src={img} width="200" height="200" alt={title} />
-                </Link>
-                <div className="view-product">
-                    <button className="cart-btn" title="Add to cart" onClick={addToCartHandler}>
-                        <i className="fa fa-shopping-bag"></i>
-                    </button>
-                    <button className="quick-view-btn" title="quick view">
-                        <i className="far fa-eye"></i>
-                    </button>
-                    <button className="wishlist-btn" title="Add to wishlist" onClick={addToWishlistHandler}>
-                        <i className="far fa-heart"></i>
-                    </button>
+                <div className="product-img">
+                    <Link to={`/shop/${id}`}>
+                        <img src={Array.isArray(img) ? img[0] : img} width="200" height="200" alt={title} />
+                    </Link>
+                    <div className="view-product">
+                        <button className="cart-btn" title="Add to cart" onClick={addToCartHandler}>
+                            <i className="fa fa-shopping-bag"></i>
+                        </button>
+                        <button className="quick-view-btn" title="quick view" onClick={showModalHandler}>
+                            <i className="far fa-eye"></i>
+                        </button>
+                        <button className="wishlist-btn" title="Add to wishlist" onClick={addToWishlistHandler}>
+                            <i className="far fa-heart"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <hr />
-            <div className="product-info">
-                <div>
-                    <p className="product-price">${price}</p> 
-                    <del>${prevPrice}</del>
-                    {discount && <p className="product-discount">{discount}% off</p>}
+                <hr />
+                <div className="product-info">
+                    <div>
+                        <p className="product-price">${price}</p> 
+                        <del>${prevPrice}</del>
+                        {discount && <p className="product-discount">{discount}% off</p>}
+                    </div>
                 </div>
-            </div>
 
-            {discount && <div className="discount-container">
-                <i className="fa fa-tags"></i> -{discount}%
-            </div>}
+                {discount && <div className="discount-container">
+                    <i className="fa fa-tags"></i> -{discount}%
+                </div>}
 
-            <Link className="product-name" to={`/shop/${id}`}>{title}</Link>
-            <p className="product-rating">Rating {rating} out of 5</p>
-        </Container>
+                <Link className="product-name" to={`/shop/${id}`}>{title}</Link>
+                <p className="product-rating">Rating {rating} out of 5</p>
+            </Container>
+            <QuickViewModal 
+              showModal={showModal} 
+              key={id} 
+              images={img}
+              title={title}
+              price={price}
+              prevPrice={prevPrice}
+              discount={discount}
+              id={id}
+              rating={rating}
+              categories={categories}
+              description={description}
+              points={points}
+              closeModal={setShowModal}
+            />
+        </Box>
     )
 }
 
 export default ProductItem;
+
+const Box = styled.div`
+    position: relative;
+`
 
 const Container = styled.div`
     display: flex !important;

@@ -22,6 +22,7 @@ import ContactPage from './pages/ContactPage';
 import ShopPage from './pages/ShopPage';
 import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
+import WishlistPage from './pages/WishlistPage';
 
 function App() {
 
@@ -68,6 +69,7 @@ function App() {
           <Route path="/shop" element={<ShopPage />} />
           <Route path="/shop/:productId" element={<ProductPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
 
           <Route path="*" element={<h1>Not found</h1>} />
       </Routes>

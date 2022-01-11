@@ -117,7 +117,7 @@ function ProductsTab(props) {
 
             return <ProductItem 
              key={item.id} 
-             img={item.images[0]}
+             img={item.images}
              title={item.title}
              price={item.price}
              prevPrice={item.prevPrice}
@@ -125,6 +125,7 @@ function ProductsTab(props) {
              id={item.id}
              rating={item.rating}
              categories={item.categories}
+             points={item.points}
             />
         });
     }

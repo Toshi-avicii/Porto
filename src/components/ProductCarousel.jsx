@@ -53,7 +53,7 @@ function ProductCarousel(props) {
 
         return <ProductItem 
          key={item.id} 
-         img={item.images[0]}
+         img={item.images}
          title={item.title}
          price={item.price}
          prevPrice={item.prevPrice}
@@ -62,6 +62,7 @@ function ProductCarousel(props) {
          rating={item.rating}
          categories={item.categories}
          description={item.description}
+         points={item.points}
         />
     });
 
