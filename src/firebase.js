@@ -4,13 +4,13 @@ import { GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
 import { getFirestore, collection } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCj5oxbRBu31FJhr4EuKsU-Fd8HhoOGpSc",
-    authDomain: "database-46a3c.firebaseapp.com",
-    databaseURL: "https://database-46a3c-default-rtdb.firebaseio.com",
-    projectId: "database-46a3c",
-    storageBucket: "database-46a3c.appspot.com",
-    messagingSenderId: "1078948395770",
-    appId: "1:1078948395770:web:ed7fdd6aae9d77df45e743"
+    apiKey: process.env.REACT_APP_API_KEY,
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_DATABASE_URL,
+    projectId: process.env.REACT_APP_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
