@@ -13,6 +13,8 @@ function ProfilePage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    console.log(currentUser);
+
     const logoutHandler = () => {
         signOut(auth).then(() => {
             dispatch(setUserLogout());
@@ -25,7 +27,17 @@ function ProfilePage() {
     return (
         <Container>
             <ProfilePic>
-                <span className="fas fa-user"></span>
+                {currentUser.photoURL ? 
+                    <img 
+                        src={currentUser.photoURL}
+                        width="200px" 
+                        height="200px" 
+                        style={{ borderRadius: "50%" }} 
+                        alt="user"
+                    /> : 
+                    <span className="fas fa-user"></span>
+                }
+                
             </ProfilePic>
 
             <UserInfo>

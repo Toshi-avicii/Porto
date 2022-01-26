@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import styled from 'styled-components';
-import { auth, provider, facebookProvider } from '../firebase';
+import { auth, provider } from '../firebase';
 import { setActiveUser } from '../store/authSlice';
 
 function LoginPage() {
@@ -28,28 +28,12 @@ function LoginPage() {
     const signInWithGoogleHandler = () => {
         const auth = getAuth();
         signInWithPopup(auth, provider).then((result) => {
-            console.log(result);
             dispatch(setActiveUser({
                 userName: result.user.displayName,
                 userEmail: result.user.email,
-                userId: result.user.uid
+                userId: result.user.uid,
+                userImage: result.user.photoURL
             }));
-
-            navigate('/');
-        }).catch(error => {
-            console.log(error);
-        })
-    }
-
-    const signInWithFacebookHandler = () => {
-        const auth = getAuth();
-        signInWithPopup(auth, facebookProvider).then((result) => {
-            console.log(result);
-            dispatch(setActiveUser({
-                userName: result.user.displayName,
-                userEmail: result.user.email,
-                userId: result.user.uid
-            }))
 
             navigate('/');
         }).catch(error => {
@@ -60,7 +44,6 @@ function LoginPage() {
     const loginHandler = (e) => {
         e.preventDefault();
         signInWithEmailAndPassword(auth, email, password).then(result => {
-            console.log(result);
             dispatch(setActiveUser({
                 userName: result.user.displayName,
                 userEmail: result.user.email,
@@ -99,14 +82,6 @@ function LoginPage() {
                 <div className="brands-btn-div">
                     <button className="google-btn" onClick={signInWithGoogleHandler}>
                         <i className="fab fa-google"></i>
-                    </button>
-
-                    <button className="facebook-btn" onClick={signInWithFacebookHandler} >
-                        <i className="fab fa-facebook-f"></i>
-                    </button>
-
-                    <button className="twitter-btn">
-                        <i className="fab fa-twitter"></i>
                     </button>
                 </div>
             </LoginBox>

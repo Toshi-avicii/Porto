@@ -12,6 +12,12 @@ const cartSlice = createSlice({
         totalWishlistItems: 0,
     },
     reducers: {
+        replaceCart(state, action) {
+            state.items = action.payload.items;
+            state.cartPrice = action.payload.cartPrice;
+            state.totalItems = action.payload.totalItems;
+        },
+
         addToCart(state, action) {
             const newItem = action.payload;
             const existingProduct = state.items.find(item => item.id === newItem.id);
@@ -131,7 +137,6 @@ const cartSlice = createSlice({
 
             Math.round(Number(state.wishlistPrice));
             Math.round(existingProduct.orderPrice);
-        
         },
     }
 });

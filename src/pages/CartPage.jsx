@@ -105,7 +105,7 @@ function CartPage() {
                             <div className="cart-items">
                                 {cartItems.map(item => {
                                     return (
-                                        <div className="cart-item">
+                                        <div className="cart-item" key={item.id}>
                                             <div className="cart-item-name">
                                                 <p>{item.name}</p>
                                                 <i>x{item.orders}</i>

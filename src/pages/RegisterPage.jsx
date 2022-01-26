@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { signInWithPopup, createUserWithEmailAndPassword, updateProfile, getAuth } from 'firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { addDoc, getDocs } from 'firebase/firestore';
-import { auth, provider, colRef, facebookProvider } from '../firebase';
+import { auth, provider, colRef } from '../firebase';
 import { setActiveUser, selectUserName } from '../store/authSlice'; 
 
 function RegisterPage() {
@@ -20,7 +20,7 @@ function RegisterPage() {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [, setError] = useState(null);
 
     const emailHandler = (e) => {
         setEmail(e.target.value);
@@ -47,6 +47,7 @@ function RegisterPage() {
             }));
 
             let users = [];
+
             getDocs(colRef)
             .then((snapshot) => {
                 snapshot.docs.forEach((doc) => {
@@ -61,57 +62,35 @@ function RegisterPage() {
                         name: result.user.displayName,
                         id: result.user.uid,
                         image: result.user.photoURL,
-                        provider: result.providerId
+                        provider: result.providerId,
+                        cart: [],
+                        wishlist: [],
+                        cartAmount: 0,
+                        wishlistAmount : 0
                     }).then((result) => {
-                        console.log(result)
                     });
 
-                    console.log(users);
-                }
-            })
-            .catch(error => {
-                console.log(error);
-            });
-
-            navigate('/');
-        }).catch(error => {
-            console.log(error);
-        })
-    }
-
-    // sign in with facebook
-    const signInWithFacebookHandler = () => {
-        const auth = getAuth();
-        signInWithPopup(auth, facebookProvider).then((result) => {
-            console.log(result);
-            dispatch(setActiveUser({
-                userName: result.user.displayName,
-                userEmail: result.user.email,
-                userId: result.user.uid
-            }));
-
-            let users = [];
-
-            getDocs(colRef)
-            .then((snapshot) => {
-                snapshot.docs.forEach((doc) => {
-                    users.push({ ...doc.data(), id: doc.id })
-                });
-
-                const registeredUser = users.find(user => user.emailId === result.user.email);
-                console.log(registeredUser);
-
-                if(!registeredUser) {
-                    addDoc(colRef, {
-                        emailId: result.user.email,
-                        name: result.user.displayName,
-                        id: result.user.uid,
-                        provider: result.providerId
-                    }).then((result) => {
-                        console.log(result)
-                    });
-
-                    console.log(users);
+                    fetch('https://database-46a3c-default-rtdb.firebaseio.com//users.json', {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            emailId: result.user.email,
+                            name: result.user.displayName,
+                            id: result.user.uid,
+                            image: result.user.photoURL,
+                            provider: result.providerId,
+                            cart: [],
+                            wishlist: [],
+                            cartAmount: 0,
+                            wishlistAmount: 0
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(res => {
+                        console.log(res)
+                    }).catch(error => {
+                        console.log(error.message);
+                    }) 
                 }
             })
             .catch(error => {
@@ -144,13 +123,38 @@ function RegisterPage() {
                     emailId: email,
                     name: name,
                     password: password,
-                    provider: user.providerId
+                    provider: user.providerId,
+                    cart: [],
+                    wishlist: [],
+                    cartAmount: 0,
+                    wishlistAmount: 0
                 }).then((result) => {});
 
                 navigate('/');
             }).catch(error => {
                 console.log(error.message);
             });
+
+            fetch('https://database-46a3c-default-rtdb.firebaseio.com//users.json', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    emailId: email,
+                    name: name,
+                    id: user.uid,
+                    provider: user.providerId,
+                    cart: [],
+                    wishlist: [],
+                    cartAmount: 0,
+                    wishlistAmount: 0
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => {
+                console.log(res)
+            }).catch(error => {
+                console.log(error.message);
+            }) 
         })
         .catch(error => {
             alert(error.message);
@@ -191,14 +195,6 @@ function RegisterPage() {
                 <div className="brands-btn-div">
                     <button className="google-btn" onClick={signInWithGoogleHandler}>
                         <i className="fab fa-google"></i>
-                    </button>
-
-                    <button className="facebook-btn" onClick={signInWithFacebookHandler} >
-                        <i className="fab fa-facebook-f"></i>
-                    </button>
-
-                    <button className="twitter-btn">
-                        <i className="fab fa-twitter"></i>
                     </button>
                 </div>
                 <div className="already-login-div">

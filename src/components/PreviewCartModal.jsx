@@ -1,15 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import Transition from 'react-transition-group/Transition';
 import { useSelector } from 'react-redux';
 import PreviewCartItem from './PreviewCartItem';
 import Button from './General/Button';
+import { colRef, auth } from '../firebase';
+import { getDocs, doc, arrayUnion, updateDoc } from 'firebase/firestore';
 
 function PreviewCartModal(props) {
     const cartItems = useSelector(state => state.cart.items);
     const cartAmount = useSelector(state => state.cart.cartPrice);
+    const userEmail = useSelector(state => state.auth.userEmail);
+    const userId = useSelector(state => state.auth.userId);
     const modalRef = useRef(null);
-
     const duration = 300;
 
     const defaultStyles = {
@@ -25,10 +28,50 @@ function PreviewCartModal(props) {
         exited: { opacity: 0, transform: 'translateY(150px)' }
     }
 
+    useEffect(() => {
+
+        if(userId && userEmail) {
+    
+          const sendUserCart = async() => {
+            const currentUser = auth.currentUser;
+    
+            const data = getDocs(colRef)
+            .then((snapshot) => {
+                
+                let users = [];
+                snapshot.docs.forEach((doc) => {
+                    users.push({ ...doc.data(), id: doc.id })
+                });
+    
+                return users;
+            })
+    
+    
+            const d = await data;
+    
+            const res = d.find(user => (user.emailId === currentUser.email));
+
+            const docRef = await doc(colRef, res.id);
+            
+            if(res) {
+                console.log(res);
+            }
+          }
+    
+          try {
+            sendUserCart();
+          } catch(error) {
+            console.log(error.message);
+          }
+        }
+    
+      }, [userId, userEmail, cartAmount, props.id, cartItems]); 
+
+
     let modalContent;
 
     if(cartItems.length === 0) {
-        modalContent = <p>No items in the cart</p>
+        modalContent = <p>No items in the cart</p> 
     }
 
     if(cartItems.length > 0) {
@@ -40,6 +83,7 @@ function PreviewCartModal(props) {
                     image={item.image}
                     price={item.price}
                     orders={item.orders}
+                    description={item.description}
                     id={item.id}
                 />
             )

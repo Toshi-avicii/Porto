@@ -23,6 +23,8 @@ import ShopPage from './pages/ShopPage';
 import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
 import WishlistPage from './pages/WishlistPage';
+import { colRef } from './firebase';
+import { getDocs, doc, arrayUnion, updateDoc } from 'firebase/firestore';
 
 function App() {
 
@@ -32,6 +34,7 @@ function App() {
   const categoriesSidebarState = useSelector(state => state.mobileMenu.shopSidebar);
   const userEmail = useSelector(state => state.auth.userEmail);
   const userId = useSelector(state => state.auth.userId);
+  const userCartAmount = useSelector(state => state.cart.cartPrice);
 
   const auth = getAuth();
 
@@ -41,12 +44,51 @@ function App() {
         dispatch(getActiveUser({
           userName: user.displayName,
           userEmail: user.email,
-          userId: user.uid
+          userId: user.uid,
+          userImage: user.photoURL,
         }));
       } else {
         console.log('no user found');
       }
     });
+
+    // const sendUserCart = async() => {
+    //   const currentUser = auth.currentUser;
+
+    //   const data = getDocs(colRef)
+    //   .then((snapshot) => {
+          
+    //       let users = [];
+    //       snapshot.docs.forEach((doc) => {
+    //           users.push({ ...doc.data(), id: doc.id })
+    //       });
+
+    //       return users;
+    //   })
+
+
+    //   const d = await data;
+
+    //   console.log(d);
+
+    //   const res = d.find(user => (user.emailId === currentUser.email));
+
+    //   const docRef = await doc(colRef, res.id);
+      
+    //   if(res) {
+    //       console.log(res);
+    //       await updateDoc(docRef, {
+    //         cartAmount: userCartAmount
+    //       })
+    //   }
+    // }
+
+    // try {
+    //   sendUserCart();
+    // } catch(error) {
+    //   console.log(error.message);
+    // }
+
   }, [auth, dispatch]);
 
   const PrivateRoute = ({ children }) => {

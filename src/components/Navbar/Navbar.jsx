@@ -15,6 +15,7 @@ function Navbar() {
     const userName = useSelector(state => state.auth.userName);
     const userEmail = useSelector(state => state.auth.userEmail);
     const userId = useSelector(state => state.auth.userId);
+    const userImg = useSelector(state => state.auth.userImage);
     const productsInCart = useSelector(state => state.cart.totalItems);
     const productsInWishlist = useSelector(state => state.cart.totalWishlistItems);
     
@@ -22,7 +23,7 @@ function Navbar() {
     const [cartIconHoverColor, setCartIconHoverColor] = useState(false);
     const [docHeight, setDocHeight] = useState(0);
     const [cartPreview, setCartPreview] = useState(false);
-
+    
     useEffect(() => {
         const navbar = document.querySelector('.navbar');
 
@@ -89,10 +90,23 @@ function Navbar() {
                                 <Link to="/account/register">Register</Link>
                             }
 
-                            {(userName || userEmail || userId) &&
+                            {((userName || userEmail || userId) && userImg) &&
                                 <Link className="profile-icon" to={`/account/${userId}`}>
+                                    <img 
+                                        src={userImg}
+                                        width="35px"
+                                        height="35px"
+                                        style={{ borderRadius: "50%", marginLeft: '5px' }}
+                                        alt={userEmail}
+                                    />
+                                </Link>
+                            }
+
+                            {
+                                ((userName || userEmail || userId) && !userImg) &&
+                                <Link to={`/account/${userId}`}>
                                     <AccountCircleIcon 
-                                        style={{ color: 'white', fontSize: '2.6rem', margin: '0 0.75rem', height: '100%' }}
+                                        style={{ color: 'white', fontSize: '25px' }}
                                     />
                                 </Link>
                             }
