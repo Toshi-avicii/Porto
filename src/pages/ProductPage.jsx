@@ -6,6 +6,7 @@ import Skeleton from 'react-loading-skeleton';
 import useFetchData from '../hooks/useFetchData';
 import ImageGallery from 'react-image-gallery';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,7 +21,8 @@ function ProductPage() {
     const productId = useParams().productId;
     const { data, loading } = useFetchData();
     const dispatch = useDispatch();
-    const cart = useSelector(state => state.cart.items);
+    const wishlist = useSelector(state => state.cart.wishlistItems);
+    const isItemInWishlist = wishlist.find(item => item.id === productId);
 
     window.addEventListener('scroll', () => {
         const nav = document.querySelector('.back-btn-nav');
@@ -199,8 +201,8 @@ function ProductPage() {
                             <i className="fas fa-arrow-left"></i>
                         </Link>
                     </div>
-                    <div className="wishlist-btn">
-                        <FavoriteBorderIcon />
+                    <div className="wishlist-btn" onClick={wishlistToastHandler}>
+                        {isItemInWishlist ? <FavoriteIcon /> :<FavoriteBorderIcon />}
                     </div>
                 </div>
             </div>
