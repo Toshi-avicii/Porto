@@ -93,6 +93,7 @@ const Container = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    overflow-x: scroll;
 
     .wishlist-item-product {
         flex: 2;
@@ -110,6 +111,10 @@ const Container = styled.div`
                 transition: 0.25s;
             }
         }
+
+        @media (max-width: 576px) {
+            min-width: 300px;
+        }
     }
 
     .wishlist-item-price {
@@ -120,6 +125,10 @@ const Container = styled.div`
         
         p {
             font-size: 1.25rem;
+        }
+
+        @media (max-width: 576px) {
+            margin: 0 1rem;
         }
     }
 
@@ -169,6 +178,10 @@ const Container = styled.div`
                 width: 100%;
             }
         }
+
+        @media (max-width: 576px) {
+            margin-right: 1rem;
+        }
     }
 
     .wishlist-item-totalprice {
@@ -180,6 +193,10 @@ const Container = styled.div`
         p {
             font-size: 1.25rem;
             font-weight: 600;
+        }
+
+        @media (max-width: 576px) {
+            margin-right: 0 1rem;
         }
     }
 
@@ -208,6 +225,15 @@ const Container = styled.div`
                     color: #ff595e;
                     transition: 0.25s;
                 }
+            }
+        }
+
+        @media (max-width: 576px) {
+            margin: 0 1rem;
+            min-width: 170px;
+
+            button.cart-btn {
+                padding: 0.5rem 1rem;
             }
         }
     }
