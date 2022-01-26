@@ -297,6 +297,10 @@ const CartBill = styled.div`
                 margin-bottom: 2rem;
             }
         }
+
+        @media (max-width: 576px) {
+            flex-direction: column;
+        }
     }
 
 
