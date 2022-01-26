@@ -165,6 +165,7 @@ const ModalBackdrop = styled.div`
     top: 0;
     z-index: 15;
     background: rgba(0, 0, 0, 0.5);
+    overflow-y: scroll;
 `
 
 
@@ -399,6 +400,28 @@ const Container = styled.div`
                 margin-top: 2rem;
                 margin-left: 0;
                 padding: 0;
+            }
         }
+
+        @media (max-width: 768px) {
+            display: flex;
+            flex-direction: column;
+            overflow-y: scroll;
+        }
+
+        @media (max-width: 576px) {
+            padding: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        height: 80vh;
+        overflow-y: overlay;
+    }
+
+    @media (max-width: 576px) {
+        height: 100vh;
+        width: 100vw;
+        padding: 1rem;
     }
 `
