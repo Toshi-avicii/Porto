@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import CloseOutlined from '@material-ui/icons/CloseOutlined';
 import { Transition } from 'react-transition-group';
 import { useSelector, useDispatch } from 'react-redux';
@@ -58,16 +59,16 @@ function MobileMenuLink() {
                     </div>
                     <ul>
                         <li>
-                            Home
+                            <Link to="/" onClick={closeMenuHandler}>Home</Link>
                         </li>
                         <li>
-                            Shop
+                        <Link to="/shop" onClick={closeMenuHandler}>Shop</Link>
                         </li>
                         <li>
-                            About Us
+                            <Link to="/about-us" onClick={closeMenuHandler}>About Us</Link>
                         </li>
                         <li>
-                            Contact Us
+                            <Link to="/contact-us" onClick={closeMenuHandler}>Contact Us</Link>
                         </li>
                     </ul>
                 </Container>
@@ -126,8 +127,19 @@ const Container = styled.div`
 
             &:hover {
                 background: #ff595e;
-                color: white;
                 transition: 0.25s;
+
+                a {
+                    color: white;
+                }
+            }
+
+            a {
+                display: inline-block;
+                text-decoration: none;
+                color: black;
+                width: 100%;
+                height: 100%;
             }
         }
     }
@@ -138,6 +150,6 @@ const Container = styled.div`
     }
 
     @media (max-width: 576px) {
-        width: 100%;
+        width: 75%;
     }
 `

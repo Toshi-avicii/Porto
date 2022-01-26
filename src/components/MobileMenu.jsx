@@ -1,15 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import ListIcon from '@material-ui/icons/List';
 import LocalMallOutlinedcon from '@material-ui/icons/LocalMallOutlined';
 import ShoppingCartOutlined from '@material-ui/icons/ShoppingCartOutlined';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { mobileMenuActions } from '../store/menuSlice';
 
 function MobileMenu() {
 
     const dispatch = useDispatch();
+    const userCartItems = useSelector(state => state.cart.totalItems);
+    const userWishlistItems = useSelector(state => state.cart.totalWishlistItems);
 
     const openMenuSidebar = () => {
         dispatch(mobileMenuActions.openMenuSidebar());
@@ -31,13 +34,19 @@ function MobileMenu() {
                     Categories
                 </li>
                 <li>
-                    <ShoppingCartOutlined />
-                    Cart
+                    <Link to="/cart">
+                        <ShoppingCartOutlined />
+                        Cart
+                        <span>{userCartItems}</span>
+                    </Link>
                 </li>
 
                 <li>
-                    <FavoriteBorderOutlinedIcon />
-                    Wishlist
+                    <Link to="/wishlist">
+                        <FavoriteBorderOutlinedIcon />
+                        Wishlist
+                        <span className="wishlist-items">{userWishlistItems}</span>
+                    </Link>
                 </li>
             </ul>
         </Container>
@@ -69,6 +78,48 @@ const Container = styled.div`
             justify-content: center;
             align-items: center;
             flex-direction: column;
+
+            a {
+                text-decoration: none;
+                color: black;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                position: relative;
+
+                span {
+                    position: absolute;
+                    top: -5px;
+                    right: -7px;
+                    height: 15px;
+                    width: 15px;
+                    border-radius: 50%;
+                    background-color: #ff595e;
+                    color: white;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 12px;
+                    padding: 0.5rem;
+                }
+
+                span.wishlist-items {
+                    position: absolute;
+                    top: -5px;
+                    right: 10px;
+                    height: 15px;
+                    width: 15px;
+                    border-radius: 50%;
+                    background-color: #ff595e;
+                    color: white;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 12px;
+                    padding: 0.5rem;
+                }
+            }
         }
     }
 
