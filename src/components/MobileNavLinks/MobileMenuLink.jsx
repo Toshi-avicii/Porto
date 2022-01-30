@@ -1,155 +1,313 @@
-import React, { useRef, useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import CloseOutlined from '@material-ui/icons/CloseOutlined';
-import { Transition } from 'react-transition-group';
-import { useSelector, useDispatch } from 'react-redux';
-import { mobileMenuActions } from '../../store/menuSlice';
-
+import React, { useRef, useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+import { useNavigate } from 'react-router-dom';
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import CloseOutlined from "@material-ui/icons/CloseOutlined";
+import { Transition } from "react-transition-group";
+import { useSelector, useDispatch } from "react-redux";
+import { mobileMenuActions } from "../../store/menuSlice";
+import { auth } from "../../firebase";
+import { signOut } from 'firebase/auth';
+import { setUserLogout } from '../../store/authSlice';
+import { cartActions } from '../../store/cartSlice';
 
 function MobileMenuLink() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const menuSidebar = useRef();
+  const menuSidebarState = useSelector((state) => state.mobileMenu.menuSidebar);
+  const [sidebarState, setSidebarState] = useState(false);
+  const currentUser = auth.currentUser;
 
-    const dispatch = useDispatch();
-    const menuSidebar = useRef();
-    const menuSidebarState = useSelector(state => state.mobileMenu.menuSidebar);
-    const [sidebarState, setSidebarState] = useState(false);
-
-    useEffect(() => {
-        if(menuSidebarState) {
-            setSidebarState(true);
-        }
-
-        if(!menuSidebarState) {
-            setSidebarState(false);
-        }
-    }, [menuSidebarState]);
-
-    const defaultStyles = {
-        transform: 'translateX(-100%)',
-        opacity: 0
+  useEffect(() => {
+    if (menuSidebarState) {
+      setSidebarState(true);
     }
 
-    const transitionStyles = {
-        entered: { transform: 'translateX(0%)', opacity: 1 }
+    if (!menuSidebarState) {
+      setSidebarState(false);
     }
+  }, [menuSidebarState]);
 
-    const closeMenuHandler = () => {
-        dispatch(mobileMenuActions.closeMenuSidebar());
-    }
+  const defaultStyles = {
+    transform: "translateX(-100%)",
+    opacity: 0,
+  };
 
-    const content = (
-        <Transition
-         in={sidebarState}
-         timeout={25} 
-         nodeRef={menuSidebar}
-         mountOnEnter 
-         unmountOnExit
+  const transitionStyles = {
+    entered: { transform: "translateX(0%)", opacity: 1 },
+  };
+
+  const closeMenuHandler = () => {
+    dispatch(mobileMenuActions.closeMenuSidebar());
+  };
+
+  const logoutHandler = () => {
+    signOut(auth).then(() => {
+        dispatch(setUserLogout());
+        dispatch(cartActions.resetCart({
+            items: [],
+            totalItems: 0,
+            cartPrice: 0
+        }));
+
+        dispatch(cartActions.resetWishlist({
+            wishlistItems: [],
+            wishlistPrice: 0,
+            totalWishlistItems: 0
+        }))
+        navigate('/');
+    }).catch(error => {
+        console.log(error.message);
+    });
+}
+
+  const content = (
+    <Transition
+      in={sidebarState}
+      timeout={25}
+      nodeRef={menuSidebar}
+      mountOnEnter
+      unmountOnExit
+    >
+      {(state) => (
+        <Container
+          ref={menuSidebar}
+          style={{ ...defaultStyles, ...transitionStyles[state] }}
         >
-            {state => 
-                <Container 
-                 ref={menuSidebar}
-                 style={ {...defaultStyles , ...transitionStyles[state]} } 
-                >
-                    <div className="menu-header">
-                        <h2>MENU</h2>
-                        <button className="close-btn" onClick={closeMenuHandler}>
-                            <CloseOutlined style={{ fontSize: '16px', padding: 0 }} />
-                        </button>
-                    </div>
-                    <ul>
-                        <li>
-                            <Link to="/" onClick={closeMenuHandler}>Home</Link>
-                        </li>
-                        <li>
-                        <Link to="/shop" onClick={closeMenuHandler}>Shop</Link>
-                        </li>
-                        <li>
-                            <Link to="/about-us" onClick={closeMenuHandler}>About Us</Link>
-                        </li>
-                        <li>
-                            <Link to="/contact-us" onClick={closeMenuHandler}>Contact Us</Link>
-                        </li>
-                    </ul>
-                </Container>
+            {!currentUser && 
+                 <button className="close-btn user-not-logged-in" onClick={closeMenuHandler}>
+                 <CloseOutlined style={{ fontSize: "26px", padding: 0 }} />
+               </button>
             }
-        </Transition>
-    )
+          {currentUser && (
+            <UserProfile>
+              {currentUser.photoURL && (
+                <div className="user-image">
+                  <img
+                    src={currentUser.photoURL}
+                    alt={currentUser.displayName}
+                  />
+                </div>
+              )}
 
-    return ReactDOM.createPortal(content, document.getElementById("sidebar"));
+              {!currentUser.photoURL && (
+                <div className="user-image">
+                  <i className="far fa-user-circle" style={{ color: "white", fontSize: "50px" }}
+                  ></i>
+                </div>
+              )}
+
+              <div className="user-name">
+                <h2>{currentUser.displayName}</h2>
+              </div>
+              <div className="user-email">
+                <p>{currentUser.email}</p>
+              </div>
+              <button className="close-btn" onClick={closeMenuHandler}>
+                <CloseOutlined style={{ fontSize: "16px", padding: 0 }} />
+              </button>
+            </UserProfile>
+          )}
+          <ul>
+            <li>
+              <Link to="/" onClick={closeMenuHandler}>
+                  <i className="fas fa-home"></i>
+                <span>Home</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/shop" onClick={closeMenuHandler}>
+                  <i className="fas fa-store"></i>
+                <span>Shop</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/about-us" onClick={closeMenuHandler}>
+                  <i className="fas fa-info-circle"></i>
+                <span>About Us</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact-us" onClick={closeMenuHandler}>
+                  <i className="fas fa-phone" style={{ transform: 'rotate(90deg)' }}></i>
+                <span>Contact Us</span>
+              </Link>
+            </li>
+            {auth.currentUser &&
+                <li className="logout">
+                    <button onClick={logoutHandler}>
+                        <i className="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </li>
+            }
+          </ul>
+        </Container>
+      )}
+    </Transition>
+  );
+
+  return ReactDOM.createPortal(content, document.getElementById("sidebar"));
 }
 
 export default MobileMenuLink;
 
 const Container = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: white;
+  box-shadow: 0px 0px 12px lightgrey;
+  z-index: 15;
+  display: none;
+  transition: all 0.5s ease-out;
+
+  button.user-not-logged-in {
     position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
+    top: 10px;
+    right: 10px;
+    border: none;
     background: white;
-    box-shadow: 0px 0px 12px lightgrey;
-    z-index: 15;
-    display: none;
-    transition: all 0.5s ease-out;
+    padding: 5px;
+    padding-bottom: 0px;
+    border-radius: 4px;
+  }
 
-    .menu-header {
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    li.logout {
+        padding: 0 1rem;
+
+        &:hover {
+            background: #ff595e;
+            transition: 0.25s;
+    
+            button {
+              color: white;
+              background: #ff595e;
+    
+              i {
+                  color: white;
+              }
+            }
+        }
+    }
+
+    li {
+      width: 100%;
+      padding: 1rem;
+
+      &:hover {
         background: #ff595e;
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1rem;
-        position: relative;
+        transition: 0.25s;
 
-        button {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            border: none;
-            background: white;
-            padding: 5px;
-            padding-bottom: 0px;
-            border-radius: 4px;
+        a {
+          color: white;
+
+          i {
+              color: white;
+          }
         }
-    }
+      }
 
-    ul {
-        list-style: none;
+      a {
         display: flex;
-        flex-direction: column;
-        height: 100%;
+        text-decoration: none;
         justify-content: flex-start;
-        align-items: flex-start;
+        align-items: center;
+        color: black;
+        width: 100%;
+        height: 100%;
 
-        li {
-            width: 100%;
-            padding: 1rem;
-
-            &:hover {
-                background: #ff595e;
-                transition: 0.25s;
-
-                a {
-                    color: white;
-                }
-            }
-
-            a {
-                display: inline-block;
-                text-decoration: none;
-                color: black;
-                width: 100%;
-                height: 100%;
-            }
+        i {
+            color: #ff595e;
+            font-size: 20px;
+            display: block;
+            margin-right: 0.5rem;
         }
-    }
 
-    @media (max-width: 992px) {
-        display: block;
-        width: 400px;
-    }
+        span {
+            font-size: 1rem;
+        }
+      }
 
-    @media (max-width: 576px) {
-        width: 75%;
+      button {
+          width: 100%;
+          border: none;
+          background: white;
+          padding: 1rem 0;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+
+          i {
+              color: #ff595e;
+              font-size: 20px;
+              display: block;
+              margin-right: 0.5rem;
+          }
+
+          span {
+              font-size: 1rem;
+          }
+      }
+
     }
-`
+  }
+
+  @media (max-width: 992px) {
+    display: block;
+    width: 400px;
+  }
+
+  @media (max-width: 576px) {
+    width: 75%;
+  }
+`;
+
+const UserProfile = styled.div`
+  background: #ff595e;
+  color: white;
+  padding: 2rem;
+  position: relative;
+
+  .user-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      img {
+          border-radius: 50%;
+          width: 70px;
+          height: 70px;
+      }
+  }
+
+  .user-name {
+      padding: 0.5rem;
+  }
+
+  .user-name, .user-email {
+      text-align: center;
+  }
+
+  button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: white;
+    padding: 5px;
+    padding-bottom: 0px;
+    border-radius: 4px;
+  }
+`;
