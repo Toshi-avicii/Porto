@@ -18,6 +18,12 @@ const cartSlice = createSlice({
             state.totalItems = action.payload.totalItems;
         },
 
+        resetCart(state, action) {
+            state.items = action.payload.items;
+            state.cartPrice = action.payload.cartPrice;
+            state.totalItems = action.payload.totalItems;
+        },
+
         addToCart(state, action) {
             const newItem = action.payload;
             const existingProduct = state.items.find(item => item.id === newItem.id);
@@ -49,6 +55,18 @@ const cartSlice = createSlice({
                 Math.round(Number(state.cartPrice));
                 Math.round(existingProduct.orderPrice);
             }
+        },
+
+        replaceWishlist(state, action) {
+            state.wishlistItems = action.payload.wishlistItems;
+            state.wishlistPrice = action.payload.wishlistPrice;
+            state.totalWishlistItems = action.payload.totalWishlistItems;
+        },
+
+        resetWishlist(state, action) {
+            state.wishlistItems = action.payload.wishlistItems;
+            state.wishlistPrice = action.payload.wishlistPrice;
+            state.totalWishlistItems = action.payload.totalWishlistItems;
         },
 
         addToWishlist(state, action) {

@@ -39,6 +39,8 @@ function RegisterPage() {
         const auth = getAuth();
         signInWithPopup(auth, provider).then((result) => {
 
+            console.log(result);
+
             dispatch(setActiveUser({
                 userName: result.user.displayName,
                 userEmail: result.user.email,
@@ -60,37 +62,17 @@ function RegisterPage() {
                     addDoc(colRef, {
                         emailId: result.user.email,
                         name: result.user.displayName,
-                        id: result.user.uid,
+                        userId: result.user.uid,
                         image: result.user.photoURL,
                         provider: result.providerId,
                         cart: [],
                         wishlist: [],
                         cartAmount: 0,
-                        wishlistAmount : 0
+                        wishlistAmount : 0,
+                        totalCartItems: 0,
+                        totalWishlistItems: 0,
                     }).then((result) => {
                     });
-
-                    fetch('https://database-46a3c-default-rtdb.firebaseio.com//users.json', {
-                        method: 'PUT',
-                        body: JSON.stringify({
-                            emailId: result.user.email,
-                            name: result.user.displayName,
-                            id: result.user.uid,
-                            image: result.user.photoURL,
-                            provider: result.providerId,
-                            cart: [],
-                            wishlist: [],
-                            cartAmount: 0,
-                            wishlistAmount: 0
-                        }),
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    }).then(res => {
-                        console.log(res)
-                    }).catch(error => {
-                        console.log(error.message);
-                    }) 
                 }
             })
             .catch(error => {
@@ -124,37 +106,19 @@ function RegisterPage() {
                     name: name,
                     password: password,
                     provider: user.providerId,
+                    userId: user.uid,
                     cart: [],
                     wishlist: [],
                     cartAmount: 0,
-                    wishlistAmount: 0
+                    wishlistAmount: 0,
+                    totalCartItems: 0,
+                    totalWishlistItems: 0,
                 }).then((result) => {});
 
                 navigate('/');
             }).catch(error => {
                 console.log(error.message);
             });
-
-            fetch('https://database-46a3c-default-rtdb.firebaseio.com//users.json', {
-                method: 'PUT',
-                body: JSON.stringify({
-                    emailId: email,
-                    name: name,
-                    id: user.uid,
-                    provider: user.providerId,
-                    cart: [],
-                    wishlist: [],
-                    cartAmount: 0,
-                    wishlistAmount: 0
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(res => {
-                console.log(res)
-            }).catch(error => {
-                console.log(error.message);
-            }) 
         })
         .catch(error => {
             alert(error.message);

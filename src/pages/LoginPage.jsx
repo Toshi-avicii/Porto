@@ -3,8 +3,10 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import styled from 'styled-components';
-import { auth, provider } from '../firebase';
+import { auth, provider, colRef } from '../firebase';
 import { setActiveUser } from '../store/authSlice';
+import { getDocs } from 'firebase/firestore';
+import { cartActions } from '../store/cartSlice';
 
 function LoginPage() {
     useEffect(() => {
@@ -34,6 +36,48 @@ function LoginPage() {
                 userId: result.user.uid,
                 userImage: result.user.photoURL
             }));
+
+            const getUserCart = async () => {
+                const data = getDocs(colRef).then((snapshot) => {
+                  let users = [];
+                  snapshot.docs.forEach((doc) => {
+                    users.push({ ...doc.data(), id: doc.id });
+                  });
+          
+                  return users;
+                });
+          
+                return data;
+              };
+          
+              try {
+                getUserCart().then((res) => {
+                  if(auth.currentUser) {
+                    const loggedInUser = res.find(
+                      (user) => user.userId === auth.currentUser.uid
+                    );
+          
+                    if (loggedInUser) {
+                      dispatch(
+                        cartActions.replaceCart({
+                          items: loggedInUser.cart,
+                          cartPrice: loggedInUser.cartAmount,
+                          totalItems: loggedInUser.totalCartItems,
+                        })
+                      );
+                      dispatch(
+                        cartActions.replaceWishlist({
+                          wishlistItems: loggedInUser.wishlist,
+                          wishlistPrice: loggedInUser.wishlistAmount,
+                          totalWishlistItems: loggedInUser.totalWishlistItems,
+                        })
+                      );
+                    }
+                  }
+                });
+              } catch (err) {
+                console.log(err.message);
+              }
 
             navigate('/');
         }).catch(error => {

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import { setUserLogout } from '../store/authSlice';
-
+import { cartActions } from '../store/cartSlice';
 
 function ProfilePage() {
     
@@ -13,11 +13,20 @@ function ProfilePage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    console.log(currentUser);
-
     const logoutHandler = () => {
         signOut(auth).then(() => {
             dispatch(setUserLogout());
+            dispatch(cartActions.resetCart({
+                items: [],
+                totalItems: 0,
+                cartPrice: 0
+            }));
+
+            dispatch(cartActions.resetWishlist({
+                wishlistItems: [],
+                wishlistPrice: 0,
+                totalWishlistItems: 0
+            }))
             navigate('/');
         }).catch(error => {
             console.log(error.message);
