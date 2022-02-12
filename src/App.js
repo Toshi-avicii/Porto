@@ -26,6 +26,7 @@ import WishlistPage from "./pages/WishlistPage";
 import { colRef } from "./firebase";
 import { getDocs, doc, updateDoc, getFirestore } from "firebase/firestore";
 import { cartActions } from "./store/cartSlice";
+import SearchPage from './pages/SearchPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -195,6 +196,7 @@ function App() {
         <Route path="/shop/:productId" element={<ProductPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/wishlist" element={<WishlistPage />} />
+        <Route path="/search" element={<SearchPage />} />
         {userId && (
           <Route path={`/account/${userId}`} element={<ProfilePage />} />
         )}

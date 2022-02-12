@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import CloseOutlined from "@material-ui/icons/CloseOutlined";
@@ -8,9 +8,10 @@ import { Transition } from "react-transition-group";
 import { useSelector, useDispatch } from "react-redux";
 import { mobileMenuActions } from "../../store/menuSlice";
 import { auth } from "../../firebase";
-import { signOut } from 'firebase/auth';
-import { setUserLogout } from '../../store/authSlice';
-import { cartActions } from '../../store/cartSlice';
+import { signOut } from "firebase/auth";
+import { setUserLogout } from "../../store/authSlice";
+import { cartActions } from "../../store/cartSlice";
+// import useSearchData from '../../hooks/useSearchData';
 
 function MobileMenuLink() {
   const dispatch = useDispatch();
@@ -19,6 +20,11 @@ function MobileMenuLink() {
   const menuSidebarState = useSelector((state) => state.mobileMenu.menuSidebar);
   const [sidebarState, setSidebarState] = useState(false);
   const currentUser = auth.currentUser;
+  const [search, setSearch] = useState("");
+
+  const searchHandler = (e) => {
+    setSearch(e.target.value);
+  };
 
   useEffect(() => {
     if (menuSidebarState) {
@@ -44,24 +50,30 @@ function MobileMenuLink() {
   };
 
   const logoutHandler = () => {
-    signOut(auth).then(() => {
+    signOut(auth)
+      .then(() => {
         dispatch(setUserLogout());
-        dispatch(cartActions.resetCart({
+        dispatch(
+          cartActions.resetCart({
             items: [],
             totalItems: 0,
-            cartPrice: 0
-        }));
+            cartPrice: 0,
+          })
+        );
 
-        dispatch(cartActions.resetWishlist({
+        dispatch(
+          cartActions.resetWishlist({
             wishlistItems: [],
             wishlistPrice: 0,
-            totalWishlistItems: 0
-        }))
-        navigate('/');
-    }).catch(error => {
+            totalWishlistItems: 0,
+          })
+        );
+        navigate("/");
+      })
+      .catch((error) => {
         console.log(error.message);
-    });
-}
+      });
+  };
 
   const content = (
     <Transition
@@ -76,11 +88,14 @@ function MobileMenuLink() {
           ref={menuSidebar}
           style={{ ...defaultStyles, ...transitionStyles[state] }}
         >
-            {!currentUser && 
-                 <button className="close-btn user-not-logged-in" onClick={closeMenuHandler}>
-                 <CloseOutlined style={{ fontSize: "26px", padding: 0 }} />
-               </button>
-            }
+          {!currentUser && (
+            <button
+              className="close-btn user-not-logged-in"
+              onClick={closeMenuHandler}
+            >
+              <CloseOutlined style={{ fontSize: "26px", padding: 0 }} />
+            </button>
+          )}
           {currentUser && (
             <UserProfile>
               {currentUser.photoURL && (
@@ -94,7 +109,9 @@ function MobileMenuLink() {
 
               {!currentUser.photoURL && (
                 <div className="user-image">
-                  <i className="far fa-user-circle" style={{ color: "white", fontSize: "50px" }}
+                  <i
+                    className="far fa-user-circle"
+                    style={{ color: "white", fontSize: "50px" }}
                   ></i>
                 </div>
               )}
@@ -113,36 +130,58 @@ function MobileMenuLink() {
           <ul>
             <li>
               <Link to="/" onClick={closeMenuHandler}>
-                  <i className="fas fa-home"></i>
+                <i className="fas fa-home"></i>
                 <span>Home</span>
               </Link>
             </li>
             <li>
               <Link to="/shop" onClick={closeMenuHandler}>
-                  <i className="fas fa-store"></i>
+                <i className="fas fa-store"></i>
                 <span>Shop</span>
               </Link>
             </li>
             <li>
               <Link to="/about-us" onClick={closeMenuHandler}>
-                  <i className="fas fa-info-circle"></i>
+                <i className="fas fa-info-circle"></i>
                 <span>About Us</span>
               </Link>
             </li>
             <li>
               <Link to="/contact-us" onClick={closeMenuHandler}>
-                  <i className="fas fa-phone" style={{ transform: 'rotate(90deg)' }}></i>
+                <i
+                  className="fas fa-phone"
+                  style={{ transform: "rotate(90deg)" }}
+                ></i>
                 <span>Contact Us</span>
               </Link>
             </li>
-            {auth.currentUser &&
-                <li className="logout">
-                    <button onClick={logoutHandler}>
-                        <i className="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </button>
-                </li>
-            }
+            {auth.currentUser && (
+              <li className="logout">
+                <button onClick={logoutHandler}>
+                  <i className="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </button>
+              </li>
+            )}
+
+            <li className="search-container">
+              <div className="search-box">
+                <div className="input-box">
+                  <input
+                    type="text"
+                    name="search"
+                    id="search"
+                    onChange={searchHandler}
+                  />
+                  <Link
+                    to={`/search?keyword=${search}`}
+                    onClick={closeMenuHandler}
+                  >
+                    <i className="fa fa-search"></i>
+                  </Link>
+                </div>
+              </div>
+            </li>
           </ul>
         </Container>
       )}
@@ -185,21 +224,76 @@ const Container = styled.div`
     align-items: flex-start;
 
     li.logout {
-        padding: 0 1rem;
+      padding: 0 1rem;
 
-        &:hover {
-            background: #ff595e;
-            transition: 0.25s;
-    
-            button {
-              color: white;
-              background: #ff595e;
-    
-              i {
-                  color: white;
-              }
-            }
+      &:hover {
+        background: #ff595e;
+        transition: 0.25s;
+
+        button {
+          color: white;
+          background: #ff595e;
+
+          i {
+            color: white;
+          }
         }
+      }
+    }
+
+    li.search-container {
+      padding: 0 1rem;
+      margin: 1rem 0;
+
+      &:hover {
+        background: white;
+      }
+
+      .search-box {
+        display: flex;
+        flex-direction: column;
+
+        .label-box {
+          display: flex;
+          justify-content: flex-start;
+          margin-bottom: 10px;
+
+          label {
+            margin-right: 8px;
+            font-size: 18px;
+
+            i {
+              color: #ff595e;
+              font-size: 20px;
+            }
+          }
+        }
+
+        .input-box {
+          display: flex;
+
+          input {
+            padding: 0.5rem 12px;
+            margin: 0;
+            border: 1px solid lightgrey;
+            font-size: 15px;
+          }
+
+          a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background-color: #ff595e;
+            color: white;
+            padding: 0.5rem 0px;
+
+            i {
+              color: white;
+            }
+          }
+        }
+      }
     }
 
     li {
@@ -214,7 +308,7 @@ const Container = styled.div`
           color: white;
 
           i {
-              color: white;
+            color: white;
           }
         }
       }
@@ -229,38 +323,37 @@ const Container = styled.div`
         height: 100%;
 
         i {
-            color: #ff595e;
-            font-size: 20px;
-            display: block;
-            margin-right: 0.5rem;
+          color: #ff595e;
+          font-size: 20px;
+          display: block;
+          margin-right: 0.5rem;
         }
 
         span {
-            font-size: 1rem;
+          font-size: 1rem;
         }
       }
 
       button {
-          width: 100%;
-          border: none;
-          background: white;
-          padding: 1rem 0;
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
+        width: 100%;
+        border: none;
+        background: white;
+        padding: 1rem 0;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
 
-          i {
-              color: #ff595e;
-              font-size: 20px;
-              display: block;
-              margin-right: 0.5rem;
-          }
+        i {
+          color: #ff595e;
+          font-size: 20px;
+          display: block;
+          margin-right: 0.5rem;
+        }
 
-          span {
-              font-size: 1rem;
-          }
+        span {
+          font-size: 1rem;
+        }
       }
-
     }
   }
 
@@ -281,23 +374,24 @@ const UserProfile = styled.div`
   position: relative;
 
   .user-image {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-      img {
-          border-radius: 50%;
-          width: 70px;
-          height: 70px;
-      }
+    img {
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+    }
   }
 
   .user-name {
-      padding: 0.5rem;
+    padding: 0.5rem;
   }
 
-  .user-name, .user-email {
-      text-align: center;
+  .user-name,
+  .user-email {
+    text-align: center;
   }
 
   button {

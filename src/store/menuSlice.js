@@ -6,7 +6,8 @@ const mobileMenuSlice = createSlice({
         menuSidebar: false,
         shopSidebar: false,
         cartSidebar: false,
-        wishlistSidebar: false
+        wishlistSidebar: false,
+        searchDisplay: false
     },
     reducers: {
         openMenuSidebar(state) {
@@ -23,6 +24,16 @@ const mobileMenuSlice = createSlice({
 
         closeCategoriesSidebar(state) {
             state.shopSidebar = false;
+        },
+
+        displaySearchResults(state, action) {
+            if (action.payload === 'display') {
+                state.searchDisplay = true;
+            } 
+
+            if(action.payload === 'not-display') {
+                state.searchDisplay = false;
+            }
         }
     }
 });
