@@ -23,6 +23,15 @@ function Navbar() {
     const [cartIconHoverColor, setCartIconHoverColor] = useState(false);
     const [docHeight, setDocHeight] = useState(0);
     const [cartPreview, setCartPreview] = useState(false);
+    const [search, setSearch] = useState("");
+
+    const searchHandler = (e) => {
+      setSearch(e.target.value);
+    };
+
+    const getSearch = (e) => {
+        document.getElementById("search").value = "";
+    };
     
     useEffect(() => {
         const navbar = document.querySelector('.navbar');
@@ -99,7 +108,7 @@ function Navbar() {
                                         style={{ borderRadius: "50%", marginLeft: '5px' }}
                                         alt={userEmail}
                                     />
-                                </Link>
+                                </Link> 
                             }
 
                             {
@@ -114,8 +123,27 @@ function Navbar() {
                     </AuthenticationBox>
                 </IconBox>
             </Container>
-            <hr style={{ height: '1px', border: 'none', background: '#f6f6f6' }} />
+
+            <Divide>
+                <hr style={{ height: '1px', border: 'none', background: '#f6f6f6' }} />
+            </Divide>
             <SecondNavbar /> 
+
+            <MobSearch className="search-container">
+              <div className="search-box">
+                <div className="input-box">
+                  <input
+                    type="text"
+                    name="search"
+                    id="search"
+                    onChange={searchHandler}
+                  />
+                  <Link to={`/search?keyword=${search}`} onClick={getSearch}>
+                    <i className="fa fa-search"></i>
+                  </Link>
+                </div>
+              </div>
+            </MobSearch>
         </>
     )
 }
@@ -129,6 +157,8 @@ const Container = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin: 0;
+    border: none;
 
     a {
         text-decoration: none;
@@ -259,6 +289,76 @@ const LoginAndRegisterBox = styled.div`
         &:hover {
             color: black;
             background: white;
+        }
+    }
+`
+
+const MobSearch = styled.div`
+
+    display: none;
+
+    .search-box {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      .label-box {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 10px;
+
+        label {
+          margin-right: 8px;
+          font-size: 18px;
+
+          i {
+            color: #ff595e;
+            font-size: 20px;
+          }
+        }
+      }
+
+      .input-box {
+        display: flex;
+        width: 100%;
+
+        input {
+          padding: 0.5rem 12px;
+          margin: 0;
+          border: 1px solid lightgrey;
+          font-size: 15px;
+          width: 100%;
+        }
+
+        a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          background-color: #ff595e;
+          color: white;
+          padding: 0.5rem 16px;
+
+          i {
+            color: white;
+          }
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+        padding: 1rem;
+        background: #000013;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+`
+
+const Divide = styled.div`
+    @media (max-width: 768px) {
+        hr {
+            display: none;
         }
     }
 `

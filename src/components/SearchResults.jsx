@@ -33,6 +33,7 @@ function SearchResults(props) {
          timeout={transitionDuration} 
          nodeRef={searchRef} 
          mountOnEnter 
+         unmountOnExit
          >  
             {state => (
                 <Container 
