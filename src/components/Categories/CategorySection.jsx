@@ -65,7 +65,7 @@ const Container = styled.div`
     padding: 1.5rem 3rem;
     display: grid;
     grid-template-rows: repeat(2, auto);
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     grid-row-gap: 2rem;
 
     .heading {
